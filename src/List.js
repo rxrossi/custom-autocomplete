@@ -3,35 +3,33 @@ import React from "react";
 const ARROW_UP = 38;
 const ARROW_DOWN = 40;
 
-function List({ onChange, children }) {
+function getNextFocus(focus, count) {
+  return !Number.isFinite(focus) || focus === count - 1 ? 0 : focus + 1;
+}
+function getPrevFocus(focus, count) {
+  return focus ? focus - 1 : count - 1;
+}
+
+function List({ onChange, children, focusedStyle }) {
   const [focus, setFocus] = React.useState(null);
-
-  function focusNext() {
-    if (!Number.isFinite(focus) || focus === children.length - 1) {
-      return setFocus(0);
-    }
-    setFocus(focus + 1);
-  }
-
-  function focusPrev() {
-    if (!focus) {
-      return setFocus(children.length - 1);
-    }
-    setFocus(focus - 1);
-  }
 
   React.useEffect(() => {
     function onKeyDown(e) {
       switch (e.keyCode) {
         case ARROW_DOWN:
           e.preventDefault();
-          focusNext();
+          const nextFocus = getNextFocus(focus, children.length);
+          setFocus(nextFocus);
+          onChange(children[nextFocus]);
           break;
         case ARROW_UP:
           e.preventDefault();
-          focusPrev();
+          const prevFocus = getPrevFocus(focus, children.length);
+          setFocus(prevFocus);
+          onChange(children[prevFocus]);
           break;
         default:
+          setFocus(null);
           break;
       }
     }
@@ -44,12 +42,7 @@ function List({ onChange, children }) {
   return children.map((child, i) =>
     React.cloneElement(child, {
       key: i,
-      style:
-        i === focus
-          ? {
-              background: "red"
-            }
-          : {}
+      style: i === focus ? focusedStyle : null
     })
   );
 }
