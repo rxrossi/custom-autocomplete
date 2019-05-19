@@ -4,9 +4,6 @@ import List from "./List";
 
 import "./styles.css";
 
-const ESC = 38;
-const TAB = 9;
-
 function App() {
   return (
     <List onChange={console.log}>
