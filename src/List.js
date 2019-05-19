@@ -42,7 +42,7 @@ function List({ onChange, children, focusedStyle }) {
   return children.map((child, i) =>
     React.cloneElement(child, {
       key: i,
-      style: i === focus ? focusedStyle : null
+      style: i === focus && focusedStyle ? focusedStyle : null
     })
   );
 }
