@@ -10,7 +10,13 @@ function getPrevFocus(focus, count) {
   return focus ? focus - 1 : count - 1;
 }
 
-function List({ onChange, children, focusedStyle }) {
+function List({
+  onChange,
+  children,
+  focusedStyle,
+  focusProp,
+  wrapper: Wrapper
+}) {
   const [focus, setFocus] = React.useState(null);
 
   React.useEffect(() => {
@@ -39,11 +45,21 @@ function List({ onChange, children, focusedStyle }) {
     };
   });
 
-  return children.map((child, i) =>
-    React.cloneElement(child, {
-      key: i,
-      style: i === focus && focusedStyle ? focusedStyle : null
-    })
+  return (
+    <Wrapper>
+      {children.map((child, i) => {
+        const props = {
+          key: i,
+          style: i === focus && focusedStyle ? focusedStyle : null
+        };
+
+        if (focusProp && i === focus) {
+          props[focusProp] = "true";
+        }
+
+        return React.cloneElement(child, props);
+      })}
+    </Wrapper>
   );
 }
 
